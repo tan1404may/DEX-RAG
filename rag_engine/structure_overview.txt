@@ -1,0 +1,8 @@
+| Component                  | What It Does                        |
+| -------------------------- | ----------------------------------- |
+| **Query Transformer**      | Multi-query expansion, HyDE support |
+| **Hybrid Retriever**       | Dense vector search from Qdrant     |
+| **Cross-Encoder Reranker** | Reorders results for accuracy       |
+| **Prompt Builder**         | Assembles context + query for LLM   |
+| **LLM Client**             | OpenAI wrapper, swappable           |
+| **RAGPipeline**            | One-liner ingest + query            |
