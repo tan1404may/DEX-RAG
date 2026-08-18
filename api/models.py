@@ -19,7 +19,7 @@ class QueryRequest(BaseModel):
     question: str = Field(..., min_length=1, max_length=2000)
     user_id: str = Field(default="default", min_length=1, max_length=100)
     top_k: int = Field(default=5, ge=1, le=20)
-    stream: bool = False
+    doc_id: str | None = Field(default=None, max_length=200)
 
 
 class Source(BaseModel):
@@ -33,11 +33,11 @@ class QueryResponse(BaseModel):
     answer: str
     sources: List[Source]
 
-
 class DocumentListItem(BaseModel):
     doc_id: str
-    title: Optional[str]
-    chunks: int
+    title: str | None = None
+    chunks: int = 0  # Add default
+    created_at: str = ""
 
 
 class DocumentListResponse(BaseModel):

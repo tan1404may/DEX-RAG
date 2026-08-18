@@ -27,6 +27,7 @@ class RAGPipeline:
             model=settings.GEMINI_MODEL,
             api_key=settings.GEMINI_API_KEY,
         )
+        self.store.create_collection()
     
     def ingest(self, file_path: str, user_id: str = "default", doc_id: str = None):
         """Ingest a document into the vector store."""
@@ -51,25 +52,18 @@ class RAGPipeline:
             "chunks": len(chunks),
         }
     
-    def query(self, question: str, user_id: str = "default", top_k: int = 5) -> dict:
-        """Answer a question using RAG."""
-        # Transform query
+    def query(self, question: str, user_id: str = "default", top_k: int = 5, doc_id: str | None = None) -> dict:
         transformed = self.query_transformer.transform(question)
         
-        # Retrieve
         results = self.retriever.retrieve(
             query_embedding=transformed.embedding,
             user_id=user_id,
+            doc_id=doc_id,
             limit=20,
         )
         
-        # Rerank
         ranked = self.reranker.rerank(question, results, top_k=top_k)
-        
-        # Build prompt
         prompt = self.prompt_builder.build(question, ranked)
-        
-        # Generate
         answer = self.llm.generate(prompt.full_prompt)
         
         return {

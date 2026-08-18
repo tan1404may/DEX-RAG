@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
+from fastapi.responses import JSONResponse
 from .routes import health, ingest, query, documents
 from .middleware.error_handler import validation_exception_handler, general_exception_handler
 from fastapi.exceptions import RequestValidationError
@@ -38,6 +38,13 @@ def create_app() -> FastAPI:
 
 
 app = create_app()
+
+
+@app.exception_handler(Exception)
+async def debug_exception_handler(request, exc):
+    import traceback
+    print(traceback.format_exc())
+    return JSONResponse(status_code=500, content={"detail": str(exc), "trace": traceback.format_exc()})
 
 
 if __name__ == "__main__":
